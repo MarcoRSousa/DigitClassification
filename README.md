@@ -7,6 +7,7 @@ The [Documents](https://github.com/MarcoRSousa/DigitClassification/tree/main/Doc
 As of 3/8/2021 my report is incomplete, and is expected to be completed for 4/25/2021.
 
 Code for K-Means, SVD, Tangent Distance can be found in the [MATLAB](https://github.com/MarcoRSousa/DigitClassification/tree/main/MATLAB) folder.
+
 Code for K-Nearest Neighbors, Neural Networks, and Convolutional Neural Networks can be found in the [Python](https://github.com/MarcoRSousa/DigitClassification/tree/main/Python) folder.
 
 As of 3/8/2021 my python code is incomplete. I would like to refine my C-NN code, and have yet to put together a Neural Network for classification. K-NN is completed, but messy.
