@@ -10,5 +10,3 @@ Code for K-Means, SVD, Tangent Distance can be found in the [MATLAB](https://git
 Code for K-Nearest Neighbors, Neural Networks, and Convolutional Neural Networks can be found in the [Python](https://github.com/MarcoRSousa/DigitClassification/tree/main/Python) folder.
 
 As of 3/26/2021 my report is incomplete, and is expected to be completed for 4/25/2021.
-
-As of 3/26/2021 my python code is mostly complete for this iteration. NN and C-NN have been completed. K-NN is completed, but messy.
