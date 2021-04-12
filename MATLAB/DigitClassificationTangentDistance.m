@@ -14,23 +14,13 @@ A = A.';
 B = test(:, 2:257);
 B = B.';
 
-%% Tangent Distance Prep
+%% Pre-Processing
+%Each digit must be processed.
+trainRange = size(A,2);
+%Wanted to process B but it lowers accuracy SOMEHOW!?!?
+testRange = size(B,2);
 
-%This is how far into A, our training set we will train
-trainRange = 5000;
-%This is how many we will test
-testRange = 2000;
-
-%Empty arrays. Used to store tangent matrices and calculate distances
-tangentVectors = cell(1,trainRange);
-tangentDistances = zeros(1,trainRange);
-
-% Empty array to store the classified values
-testedValues = zeros(1,testRange);
-
-%% Training Digits
-
-%Creating tangent vectors for training
+% Pre-processing Training(A)
 for trainNum = 1:trainRange
     
     %Extracting the column digit at training number index; formating in R2
@@ -41,12 +31,48 @@ for trainNum = 1:trainRange
     
     %converting to a better grayscale type
     e = mat2gray(e,[-1 1]);
-    %blurring the imagel using gaussian filter
+    %blurring the image using gaussian filter
     e = imgaussfilt(e,0.9);
+    
+    
+    
+    %Reshape back from matrix to vector form
+    eVec = reshape(e,256,1);
+    
+    %Replace the smoothed vector values inplace
+    A(:,trainNum) = eVec;
+    
+    disp("Training Digit Processed:" + trainNum)
+    
+end
+
+%% Tangent Distance Prep
+
+%This is how far into A, our training set will train
+trainRange = 5000;
+%This is how many we will test
+testRange = 2000;
+
+%Empty arrays. Used to store tangent matrices and calculate distances
+tangentVectors = cell(1,trainRange);
+tangentDistances = zeros(1,trainRange);
+
+% Empty array to store the classified values
+testedValues = zeros(1,testRange);
+%% Training Digits
+
+%Creating tangent vectors for training
+for trainNum = 1:trainRange
+    
+    %Extracting the column digit at training number index; formating in R2
+    e = A(:,trainNum);
+    e = reshape(e,16,16);
+    %Do not do this; redoing it once reshape back to R256 is an error:
+    %e = rot90(e,1);
+    %e = flipdim(e,1);
     
     %calculating a tangent matrix consisting of tangent vectors
     Te = createTangentMatrix(e);
-    
     M{trainNum} = Te;
     
     disp("Trained:" + trainNum)
@@ -59,7 +85,7 @@ end
 
 for testNum = 1:testRange
     
-    %Curreent tested digit
+    %Current tested digit
     pVec = B(:,testNum);
     p = reshape(pVec,16,16);
     p = rot90(p,1);
@@ -73,25 +99,14 @@ for testNum = 1:testRange
     %constructing tangent matrix for this test digit
     Tp = createTangentMatrix(p);
     
+    %I reshape it back so that it retains the greyscale and blur
+    p = reshape(p,256,1);
+        
     %Calculating distance from p to every e in train
     for testingNum = 1:trainRange
         %extracting e and its tangent matrix
         e = A(:,testingNum);
-        
-        e = reshape(e,16,16);
-        e = rot90(e,1);
-        e = flipdim(e,1);
-        %converting to a better grayscale type
-        e = mat2gray(e,[-1 1]);
-        %blurring the imagel using gaussian filter
-        e = imgaussfilt(e,0.9);
-        
-        e = reshape(e,256,1);
-        
         Te = M{testingNum};
-        
-        %I reshape it back so that it retains the greyscale and blur
-        p = reshape(p,256,1);
         
         %storing the distances for a particular p versus every e
         tangentDistances(testingNum) = distance(p,Tp,e,Te);
@@ -296,6 +311,3 @@ function tangentDistance = distance(p,tp,e,te)
     tangentDistance = norm(pCurve - eCurve)^2;
    
 end
-
-
-
